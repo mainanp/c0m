@@ -1,0 +1,15 @@
+[package]
+name = "c0m-cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "c0m"
+path = "src/main.rs"
+
+[dependencies]
+c0m-frontend.workspace = true
+c0m-weighting.workspace = true
+c0m-dos.workspace = true
+c0m-emitter.workspace = true
+c0m-feedback.workspace = true

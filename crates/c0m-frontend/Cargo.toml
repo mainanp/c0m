@@ -1,0 +1,6 @@
+[package]
+name = "c0m-frontend"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]

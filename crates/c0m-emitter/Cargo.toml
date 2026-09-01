@@ -1,0 +1,8 @@
+[package]
+name = "c0m-emitter"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+c0m-frontend.workspace = true
+c0m-dos.workspace = true

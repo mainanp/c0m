@@ -1,0 +1,22 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/c0m-frontend",
+    "crates/c0m-weighting",
+    "crates/c0m-dos",
+    "crates/c0m-emitter",
+    "crates/c0m-feedback",
+    "c0m-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Patrick Ng'ang'a Maina <167052>"]
+
+[workspace.dependencies]
+c0m-frontend = { path = "crates/c0m-frontend" }
+c0m-weighting = { path = "crates/c0m-weighting" }
+c0m-dos = { path = "crates/c0m-dos" }
+c0m-emitter = { path = "crates/c0m-emitter" }
+c0m-feedback = { path = "crates/c0m-feedback" }

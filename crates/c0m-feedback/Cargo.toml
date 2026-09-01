@@ -1,0 +1,7 @@
+[package]
+name = "c0m-feedback"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+c0m-frontend.workspace = true
