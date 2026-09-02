@@ -42,6 +42,6 @@ sudo sysctl kernel.perf_event_paranoid=1   # or grant CAP_PERFMON via setcap
 
 ## Test programs
 
-`suda-tests/` holds the curated suite referenced in Chapter 3.5.3,
+`c0m-tests/` holds the curated suite referenced in Chapter 3.5.3,
 ordered by structural complexity (arithmetic -> branching -> loops ->
 nested loops -> function calls), to exercise every DOS tier.

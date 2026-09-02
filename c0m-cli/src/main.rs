@@ -14,7 +14,7 @@ use std::process::ExitCode;
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
     let Some(input_path) = args.get(1) else {
-        eprintln!("usage: c0m <source.suda> [--trace-emit]");
+        eprintln!("usage: c0m <source.c0m> [--trace-emit]");
         return ExitCode::FAILURE;
     };
 
