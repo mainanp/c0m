@@ -6,6 +6,6 @@ use crate::ast::NodeId;
 use crate::lexer::Token;
 use crate::ParseError;
 
-pub fn parse(_tokens: &[Token], _arena: &mut Arena) -> Result<NodeId, ParseError> {
+pub fn parse(_tokens: &[(Token, SourceSpan)], _arena: &mut Arena) -> Result<NodeId, ParseError> {
     todo!("increment 1: recursive-descent parse per the Suda grammar")
 }
