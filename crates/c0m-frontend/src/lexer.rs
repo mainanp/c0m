@@ -121,6 +121,7 @@ impl<'a> Lexer<'a> {
             "else" => Token::Else,
             "loop" => Token::Loop,
             "for" => Token::For,
+            "in" => Token::In,
             "parallel" => Token::Parallel,
             "match" => Token::Match,
             "return" => Token::Return,
@@ -440,6 +441,7 @@ pub enum Token {
     Else,
     Loop,
     For,
+    In,
     Parallel,
     Match,
     Return,
@@ -608,5 +610,24 @@ mod tests {
         assert!(tokenize("''", 0).is_err());   // empty
         assert!(tokenize("'ab'", 0).is_err()); // more than one character
         assert!(tokenize("'a", 0).is_err());   // unterminated
+    }
+
+    #[test]
+    fn tokenizes_in_keyword() {
+        let src = "for i in 0..10";
+        let tokens: Vec<Token> = tokenize(src, 0)
+            .expect("should tokenize cleanly")
+            .into_iter()
+            .map(|(t, _)| t)
+            .collect();
+        assert_eq!(tokens, vec![
+            Token::For,
+            Token::Ident("i".to_string()),
+            Token::In,
+            Token::IntLit(0),
+            Token::DotDot,
+            Token::IntLit(10),
+            Token::Eof,
+        ]);
     }
 }
