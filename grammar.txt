@@ -1,0 +1,56 @@
+(* ── Top level ─────────────────────────────────────────── *)
+Program        ::= { FunctionDecl } ;
+
+FunctionDecl   ::= "fn" Identifier "(" [ ParamList ] ")" "->" ReturnType Block ;
+ParamList      ::= Param { "," Param } ;
+Param          ::= Identifier ":" Type ;
+ReturnType     ::= Type | "(" Type { "," Type } ")" ;
+
+(* ── Types ─────────────────────────────────────────────── *)
+Type           ::= "&" [ "mut" ] Type | PrimitiveType ;
+PrimitiveType  ::= "i64" | "f64" | "bool" | "string" | Identifier ;
+
+(* ── Statements ────────────────────────────────────────── *)
+Block          ::= "{" { Statement } [ Expression ] "}" ;
+Statement      ::= [ TierAnnotation ] StatementBody ;
+TierAnnotation ::= "@" IntLiteral ;
+StatementBody  ::= LetStatement
+                  | ForStatement
+                  | ParallelForStatement
+                  | MatchStatement
+                  | ReturnStatement
+                  | AssignStatement
+                  | ExpressionStatement
+                  | Block ;
+
+LetStatement         ::= "let" [ "mut" ] Identifier [ ":" Type ] "=" Expression ";" ;
+ForStatement          ::= "for" Identifier "in" Expression ".." Expression Block ;
+ParallelForStatement  ::= "parallel" "for" Identifier "in" Expression ".." Expression Block ;
+MatchStatement        ::= "match" Expression "{" { MatchArm } "}" ;
+MatchArm              ::= Pattern "=>" ( Expression | Block ) "," ;
+Pattern               ::= IntLiteral | StringLiteral | Identifier | "_" ;
+ReturnStatement       ::= "return" [ ExpressionList ] ";" ;
+ExpressionList        ::= Expression { "," Expression } ;
+AssignStatement       ::= LValue "=" Expression ";" ;
+LValue                ::= Identifier | "*" LValue ;
+ExpressionStatement   ::= Expression ";" ;
+
+(* ── Expressions, low to high precedence ──────────────── *)
+Expression     ::= LogicalOr ;
+LogicalOr      ::= LogicalAnd { "||" LogicalAnd } ;
+LogicalAnd     ::= Equality  { "&&" Equality } ;
+Equality       ::= Comparison { ( "==" | "!=" ) Comparison } ;
+Comparison     ::= Additive  { ( "<" | "<=" | ">" | ">=" ) Additive } ;
+Additive       ::= Multiplicative { ( "+" | "-" ) Multiplicative } ;
+Multiplicative ::= Unary     { ( "*" | "/" | "%" ) Unary } ;
+Unary          ::= ( "-" | "!" | "&" [ "mut" ] ) Unary | Call ;
+Call           ::= Primary { "(" [ ArgList ] ")" } ;
+ArgList        ::= Expression { "," Expression } ;
+Primary        ::= IntLiteral | FloatLiteral | StringLiteral | BoolLiteral | CharLiteral
+                  | Identifier
+                  | "(" Expression ")"
+                  | IfExpr
+                  | MatchExpr ;
+
+IfExpr    ::= "if" Expression Block [ "else" ( Block | IfExpr ) ] ;
+MatchExpr ::= "match" Expression "{" { Pattern "=>" Expression "," } "}" ;
