@@ -3,9 +3,7 @@
 An IR-free compiler for Suda, translating directly from an AST to x86-64
 assembly. Companion codebase to the project proposal
 "C0m: An Intermediate-Representation-Free Compiler for Auditable and
-Traceable Machine Code Generation" (Patrick Ngangaa Maina, 167052,
-Strathmore University, supervised by Mr. Tiberius Tabulu).
-
+Traceable Machine Code Generation" 
 ## Layout
 
 This is a Cargo workspace with one crate per methodology increment
