@@ -43,7 +43,7 @@ Equality       ::= Comparison { ( "==" | "!=" ) Comparison } ;
 Comparison     ::= Additive  { ( "<" | "<=" | ">" | ">=" ) Additive } ;
 Additive       ::= Multiplicative { ( "+" | "-" ) Multiplicative } ;
 Multiplicative ::= Unary     { ( "*" | "/" | "%" ) Unary } ;
-Unary          ::= ( "-" | "!" | "&" [ "mut" ] ) Unary | Call ;
+Unary          ::= ( "-" | "!" | "&" [ "mut" ] | "*" ) Unary | Call ;
 Call           ::= Primary { "(" [ ArgList ] ")" } ;
 ArgList        ::= Expression { "," Expression } ;
 Primary        ::= IntLiteral | FloatLiteral | StringLiteral | BoolLiteral | CharLiteral
