@@ -16,17 +16,55 @@ pub mod parser;
 pub mod span;
 
 pub use arena::Arena;
-pub use ast::{AstNode, NodeId, NodeKind};
+pub use ast::{AstNode, NodeId, NodeKind, Payload};
 pub use span::SourceSpan;
 
 /// Top-level entry point for increment 1: source text in, AST root out.
 /// Everything downstream (increments 2-5) consumes only this AST.
-pub fn parse_source(_source: &str, _file_hash: u64) -> Result<(Arena, NodeId), ParseError> {
-    todo!("wire lexer::tokenize -> parser::parse once the grammar is defined")
+pub fn parse_source(source: &str, file_hash: u64) -> Result<(Arena, NodeId), ParseError> {
+    let tokens = lexer::tokenize(source, file_hash)?;
+    let mut arena = Arena::new();
+    let root = parser::parse(&tokens, &mut arena)?;
+    Ok((arena, root))
 }
 
 #[derive(Debug)]
 pub struct ParseError {
     pub span: SourceSpan,
     pub message: String,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn end_to_end_minimal_program() {
+        let src = "fn main() -> () { let x: i64 = 1 + 2; }";
+        let (arena, root) = parse_source(src, 0).expect("should parse end-to-end");
+        let program = arena.get(root);
+        assert_eq!(program.kind, NodeKind::Program);
+        assert_eq!(program.children.len(), 1);
+    }
+
+    #[test]
+    fn end_to_end_rejects_bidi_override() {
+        let src = "fn main() -> () { let x: i64 = 1;\u{202E}// hidden }";
+        assert!(parse_source(src, 0).is_err());
+    }
+
+    #[test]
+    fn end_to_end_propagates_lexer_error() {
+        // Unterminated string — must surface through the FULL pipeline,
+        // not just in an isolated lexer::tokenize call.
+        let src = r#"fn main() -> () { let x: string = "oops; }"#;
+        assert!(parse_source(src, 0).is_err());
+    }
+
+    #[test]
+    fn end_to_end_propagates_parser_error() {
+        // Valid tokens, invalid grammar — same idea, one layer up.
+        let src = "fn main() -> () { 1 + 1 = 5; }";
+        assert!(parse_source(src, 0).is_err());
+    }
 }

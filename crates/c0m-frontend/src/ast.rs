@@ -49,6 +49,8 @@ pub enum NodeKind {
     Call,
     FuncDef,
     Param,
+    ParamList,
+    ReturnType,
     Let,
     Assign,
     Return,
@@ -94,6 +96,14 @@ pub struct AstNode {
     pub children: Vec<NodeId>,
     pub loop_bound_hint: Option<u32>,
     pub payload: Option<Payload>,
+
+    ///Set only when the parser saw an explicit '@N' annotation directly
+    ///on this node's statement. None means no override - let the pattern Analyzer
+    ///compute the normal way
+    pub tier_override: Option<u8>,
+
+    ///Only menaingful when 'kind == NodeKind::Block'
+    pub has_tail: bool,
 }
 
 impl AstNode {
@@ -105,6 +115,8 @@ impl AstNode {
             children: Vec::new(),
             loop_bound_hint: None,
             payload: None,
+            tier_override: None,
+            has_tail: false,
         }
     }
 }

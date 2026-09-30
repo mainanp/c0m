@@ -483,10 +483,44 @@ pub enum Token {
     Eof,
 }
 
+/// Computes 1-based (line, col) for a byte offset — gives the bidi
+/// rejection a real source location instead of a bare offset, matching
+/// the shape every other ParseError already carries.
+fn line_col_at(source: &str, byte_offset: usize) -> (u32, u32) {
+    let mut line = 1u32;
+    let mut col = 1u32;
+    for (i, ch) in source.char_indices() {
+        if i >= byte_offset {
+            break;
+        }
+        if ch == '\n' {
+            line += 1;
+            col = 1;
+        } else {
+            col += 1;
+        }
+    }
+    (line, col)
+}
+
 pub fn tokenize(
     source: &str,
     file_hash: u64,
 ) -> Result<Vec<(Token, SourceSpan)>, crate::ParseError> {
+    if let Some(byte_offset) = contains_bidi_control(source) {
+        let (line, col) = line_col_at(source, byte_offset);
+        return Err(crate::ParseError {
+            span: SourceSpan {
+                file_hash,
+                line,
+                col,
+                byte_offset: byte_offset as u32,
+                length: 1,
+            },
+            message: "Unicode bidirectional control character rejected (Trojan Source mitigation)".to_string(),
+        });
+    }
+
     let mut lexer = Lexer::new(source, file_hash);
     let mut tokens = Vec::new();
     while let Some(tok) = lexer.next_token()? {
