@@ -1,6 +1,11 @@
 // Simplest possible Suda program: straight-line arithmetic.
-// Expected DOS tier: 0 (no loops, no branches, no calls).
-fn main() {
+// Intended DOS tier: 0 (no loops, no branches, no calls).
+fn main() -> () {
     let x = 2 + 3;
     let y = x * 4;
 }
+
+
+
+
+

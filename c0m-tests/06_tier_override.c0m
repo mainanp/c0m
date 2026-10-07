@@ -1,0 +1,5 @@
+// Straight-line code forced to tier 3 by an @N annotation.
+// Intended DOS tier: 3 (override beats the computed tier 0).
+fn main() -> () {
+    @3 let x: i64 = 1 + 2;
+}

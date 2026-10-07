@@ -1,0 +1,9 @@
+// One loop with a static bound (bound hint = 100).
+// Intended DOS tier: 1 (hot enough to notice, not nested).
+fn sum() -> i64 {
+    let mut total: i64 = 0;
+    for i in 0..100 {
+        total = total + i;
+    }
+    return total;
+}

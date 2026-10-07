@@ -1,0 +1,13 @@
+// Branching, no loops or calls.
+// Intended DOS tier: 1 (moderate: cmov / lea candidates).
+fn classify(x: i64) -> i64 {
+    let mut r: i64 = 0;
+    if x > 0 {
+        r = 1;
+    } else if x == 0 {
+        r = 0;
+    } else {
+        r = -1;
+    }
+    return r;
+}

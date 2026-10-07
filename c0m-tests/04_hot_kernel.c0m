@@ -1,0 +1,15 @@
+// Triply nested loops with a branch in the innermost body.
+// Intended DOS tier: 3 (critical: unroll x4 candidate).
+fn kernel() -> i64 {
+    let mut acc: i64 = 0;
+    for i in 0..32 {
+        for j in 0..32 {
+            for k in 0..32 {
+                if (i + j + k) % 2 == 0 {
+                    acc = acc + i * j * k;
+                }
+            }
+        }
+    }
+    return acc;
+}

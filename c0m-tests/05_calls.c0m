@@ -1,0 +1,5 @@
+// Chained calls, no loops.
+// Intended DOS tier: 1 (call depth raises weight; inline candidates).
+fn double(x: i64) -> i64 { return x * 2; }
+fn quad(x: i64) -> i64 { return double(double(x)); }
+fn main() -> () { let r: i64 = quad(5); }

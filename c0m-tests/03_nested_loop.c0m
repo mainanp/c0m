@@ -1,0 +1,11 @@
+// Two nested loops.
+// Intended DOS tier: 2 (hot: unroll x2 candidate).
+fn grid() -> i64 {
+    let mut total: i64 = 0;
+    for i in 0..10 {
+        for j in 0..10 {
+            total = total + i * j;
+        }
+    }
+    return total;
+}
