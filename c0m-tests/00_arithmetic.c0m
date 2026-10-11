@@ -1,5 +1,7 @@
 // Simplest possible Suda program: straight-line arithmetic.
 // Intended DOS tier: 0 (no loops, no branches, no calls).
+//The containing block/funcDef/program nodes add up their children's weights, so they can reach tier
+//1
 fn main() -> () {
     let x = 2 + 3;
     let y = x * 4;
