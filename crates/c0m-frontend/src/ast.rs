@@ -1,4 +1,4 @@
-use crate::span::SourceSpan;
+use crate::span::{fnv_mix, SourceSpan};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NodeId(pub u32);
@@ -118,5 +118,20 @@ impl AstNode {
             tier_override: None,
             has_tail: false,
         }
+    }
+
+    /// The node's identity in pattern memory: its span hash, then the
+    /// node kind mixed in. The kind is needed because some different
+    /// nodes cover exactly the same bytes (a Program holding one
+    /// function covers the same bytes as that FuncDef; a ReturnType
+    /// wrapping one type covers the same bytes as that TypeName).
+    ///
+    /// `self.kind as u8` turns the enum into its position number. That
+    /// is allowed because NodeKind has no data inside its variants.
+    /// Catch: reordering or inserting variants changes the numbers, so
+    /// a saved pattern_memory file would stop matching. Increment 5
+    /// should store a format version in the file header.
+    pub fn key(&self) -> u64 {
+        fnv_mix(self.span.hash(), &[self.kind as u8])
     }
 }

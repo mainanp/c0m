@@ -68,4 +68,19 @@ mod tests {
         let src = "fn main() -> () { 1 + 1 = 5; }";
         assert!(parse_source(src, 0).is_err());
     }
+
+    #[test]
+    fn every_node_gets_a_unique_key() {
+        // The old XOR hash failed this: `2 + 3` and its left `2` shared a
+        // key, and Program/FuncDef covered identical bytes.
+        let src = "fn f(x: i64) -> i64 { let y: i64 = 2 + 3 * x; return y; }";
+        let (arena, _root) = parse_source(src, 0).expect("should parse");
+
+        let mut seen = std::collections::HashSet::new();
+        for i in 0..arena.len() {
+            let key = arena.get(NodeId(i as u32)).key();
+            // HashSet::insert returns false if the value was already there.
+            assert!(seen.insert(key), "duplicate key at node index {i}");
+        }
+    }
 }
