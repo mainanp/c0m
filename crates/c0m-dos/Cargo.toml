@@ -5,3 +5,6 @@ edition.workspace = true
 
 [dependencies]
 c0m-frontend.workspace = true
+
+[dev-dependencies]
+c0m-weighting.workspace = true
