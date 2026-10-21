@@ -27,6 +27,7 @@ version = "0.1.0"
 dependencies = [
  "c0m-dos",
  "c0m-frontend",
+ "c0m-weighting",
 ]
 
 [[package]]
