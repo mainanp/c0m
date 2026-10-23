@@ -1,0 +1,198 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/main.rs (target/debug/deps/c0m-8641e7e4f3c35917)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/emit_e2e.rs (target/debug/deps/emit_e2e-53d3db7e8afef683)
+
+running 20 tests
+test every_strategy_in_hot_nested_loops ... ok
+test jump_table_matches_the_plain_chain ... ok
+test logical_operators_short_circuit_and_yield_values ... ok
+test division_modulo_and_negation ... ok
+test if_as_a_value ... ok
+test deep_expression_forces_spills ... ok
+test callee_saved_registers_survive_a_hot_function ... ok
+test cmov_in_hot_loops_keeps_the_right_value ... ok
+test suite_00_main_exits_with_status_zero ... ok
+test pointers_borrow_and_dereference ... ok
+test recursion_saves_temporaries_across_calls ... ok
+test many_arguments_and_parallel_for ... ok
+test match_as_value_with_a_binding_pattern ... ok
+test nonzero_loop_start_and_variable_bound ... ok
+test suite_01_classify ... ok
+test suite_02_single_loop ... ok
+test suite_03_nested_loop ... ok
+test suite_05_calls_inline_and_return_the_right_value ... ok
+test two_return_values_use_rax_and_rdx ... ok
+test suite_04_hot_kernel ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+     Running tests/integration_smoke.rs (target/debug/deps/integration_smoke-1f192a2f688d487d)
+
+running 1 test
+test every_test_program_parses ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/c0m_dos-5ca7c281a8454e67)
+
+running 30 tests
+test tests::an_empty_store_never_inlines ... ok
+test tests::gates_are_nested ... ok
+test tests::an_optional_strategy_still_fits_in_one_byte ... ok
+test tests::dense_integer_match_becomes_a_jump_table ... ok
+test tests::calls_that_cannot_be_inlined_stay_direct ... ok
+test tests::menu_list_matches_the_enum ... ok
+test tests::higher_gates_stay_latent_below_their_tier ... ok
+test tests::log_records_and_reads_back ... ok
+test tests::only_the_innermost_loop_is_unrolled ... ok
+test tests::multiply_by_constant_climbs_the_ladder ... ok
+test tests::parallel_for_is_treated_like_for ... ok
+test tests::multiply_falls_back_to_direct ... ok
+test tests::suite_00_arithmetic_has_nothing_to_optimize ... ok
+test tests::plan_covers_every_node_and_keys_stay_unique ... ok
+test tests::suite_02_single_loop_is_unrolled_by_two ... ok
+test tests::simple_if_else_becomes_cmov ... ok
+test tests::small_leaf_callees_are_inlined ... ok
+test tests::suite_01_branching_only_the_simple_inner_if_is_a_cmov ... ok
+test tests::tier_zero_unlocks_nothing_but_direct ... ok
+test tests::suite_03_nested_loop_unrolls_only_the_inner_one ... ok
+test tests::suite_06_an_override_raises_the_budget_but_cannot_invent_strategies ... ok
+test tests::unknown_bound_means_direct ... ok
+test tests::tier_decides_how_much_to_unroll ... ok
+test tests::suite_05_calls_inline_the_nested_leaf_calls_only ... ok
+test tests::suite_04_hot_kernel_gets_the_heaviest_treatment_innermost ... ok
+test tests::the_bound_must_divide_evenly_so_the_ladder_steps_down ... ok
+test tests::writing_to_the_counter_or_a_huge_body_blocks_unrolling ... ok
+test tests::unweighted_trees_stay_direct_everywhere ... ok
+test tests::unsuitable_matches_stay_direct ... ok
+test tests::unsafe_or_complex_ifs_stay_direct ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/c0m_emitter-97268a70d1b22a8e)
+
+running 21 tests
+test oracle::tests::exhaustion_then_free_makes_room_again ... ok
+test oracle::tests::priority_is_recorded_and_reset_clears_everything ... ok
+test oracle::tests::temps_come_out_caller_saved_first ... ok
+test oracle::tests::scratch_and_frame_registers_are_never_handed_out ... ok
+test oracle::tests::homes_are_callee_saved_only_and_run_out_after_five ... ok
+test oracle::tests::live_caller_saved_lists_only_busy_caller_saved ... ok
+test oracle::tests::temps_fall_back_to_callee_saved_and_mark_them_touched ... ok
+test oracle::tests::every_register_has_a_distinct_name ... ok
+test tests::arithmetic_uses_an_immediate_add ... ok
+test tests::minimal_main_exits_with_status_zero ... ok
+test tests::return_count_must_match_the_signature ... ok
+test tests::dense_match_at_tier_two_uses_a_jump_table ... ok
+test tests::leaf_calls_are_inlined_and_the_rest_are_real_calls ... ok
+test tests::deep_expressions_spill_instead_of_failing ... ok
+test tests::hot_kernel_innermost_loop_is_unrolled_by_four ... ok
+test tests::single_loop_is_unrolled_by_two ... ok
+test tests::simple_if_else_in_a_loop_becomes_cmov_without_a_jump ... ok
+test tests::undefined_variable_reports_a_location ... ok
+test tests::unsupported_types_are_clean_errors ... ok
+test tests::strategy_log_covers_every_emitted_node ... ok
+test tests::every_instruction_has_exactly_one_trace_entry ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/c0m_feedback-8b10fee746518a58)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/c0m_frontend-9de1273fd90616d1)
+
+running 29 tests
+test lexer::tests::accepts_clean_source ... ok
+test lexer::tests::rejects_bidi_override ... ok
+test lexer::tests::tokenizes_char_literals ... ok
+test lexer::tests::tokenize_basic_punctuation ... ok
+test lexer::tests::tokenizes_identifiers_keywords_and_numbers ... ok
+test lexer::tests::rejects_malformed_char_literals ... ok
+test lexer::tests::tokenizes_in_keyword ... ok
+test lexer::tests::tokenizes_strings_and_bools ... ok
+test lexer::tests::unterminated_string_is_an_error ... ok
+test parser::tests::assignment_through_deref ... ok
+test dump::tests::weighted_dump_shows_weights_and_plain_dump_does_not ... ok
+test parser::tests::for_loop_gets_static_bound_hint ... ok
+test parser::tests::general_match_with_go_style_return ... ok
+test parser::tests::parses_precedence_correctly ... ok
+test parser::tests::parses_dereference ... ok
+test parser::tests::parses_int_literal ... ok
+test parser::tests::if_expression_feeds_a_let_with_tail_values ... ok
+test parser::tests::parses_minimal_function ... ok
+test parser::tests::rejects_bad_assignment_target ... ok
+test parser::tests::tier_annotation_sets_override ... ok
+test span::tests::different_files_differ ... ok
+test span::tests::line_and_col_are_for_humans_only ... ok
+test span::tests::parent_and_first_child_differ ... ok
+test span::tests::same_span_gives_same_hash ... ok
+test tests::end_to_end_minimal_program ... ok
+test tests::end_to_end_propagates_lexer_error ... ok
+test tests::end_to_end_propagates_parser_error ... ok
+test tests::end_to_end_rejects_bidi_override ... ok
+test tests::every_node_gets_a_unique_key ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/c0m_weighting-789a9c64398221b6)
+
+running 18 tests
+test tests::a_triple_nested_loop_is_tier_2_not_3 ... ok
+test tests::an_if_counts_itself_and_its_condition ... ok
+test tests::branches_and_calls_deepen_only_their_conditional_parts ... ok
+test tests::big_known_loop_bounds_get_a_boost ... ok
+test tests::loop_depth_saturates_instead_of_overflowing ... ok
+test tests::match_counts_as_a_branch ... ok
+test tests::else_if_chains_get_heavier_at_each_step ... ok
+test tests::nested_call_arguments_are_deeper_but_the_callee_is_not ... ok
+test tests::only_a_loops_body_gets_deeper ... ok
+test tests::learned_weight_blends_for_that_node_only ... ok
+test tests::nested_loops_score_deeper_and_sum_upward ... ok
+test tests::second_loop_is_not_penalised_for_the_first ... ok
+test tests::straight_line_leaves_stay_tier_0_but_containers_add_up ... ok
+test tests::tier_override_can_lower_a_tier ... ok
+test tests::statements_inside_nested_loops_get_a_tier_floor ... ok
+test tests::tier_thresholds_match_blueprint ... ok
+test tests::tier_override_can_raise_a_tier ... ok
+test tests::unseen_nodes_use_raw_alone ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests c0m_dos
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests c0m_emitter
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests c0m_feedback
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests c0m_frontend
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests c0m_weighting
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
