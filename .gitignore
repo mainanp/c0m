@@ -2,3 +2,4 @@
 **/*.rs.bk
 .c0m/
 *.pdb
+/demo/

@@ -70,6 +70,18 @@ fn main() -> ExitCode {
     // would be thrown away on every change.
     let file_hash = fnv1a(input_path.as_bytes());
 
+    if args.iter().any(|a| a == "--dump-tokens") {
+        match c0m_frontend::lexer::tokenize(&source, file_hash) {
+            Ok(toks) => {
+                for (t, s) in toks {
+                    println!("{}:{}  {:?}", s.line, s.col, t);
+                }
+            }
+            Err(e) => eprintln!("{}:{}: error: {}", e.span.line, e.span.col, e.message),
+        }
+        return ExitCode::SUCCESS;
+    }
+
     let (mut arena, root) = match parse_source(&source, file_hash) {
         Ok(ok) => ok,
         Err(e) => {
@@ -84,9 +96,18 @@ fn main() -> ExitCode {
     }
 
     // Increment 2: weigh the tree (no learned history until increment 5).
-    analyze(&mut arena, root, &no_history);
+    let no_dos = args.iter().any(|a| a == "--no-dos");
+    if !no_dos {
+        analyze(&mut arena, root, &no_history);
+    }
+    if args.iter().any(|a| a == "--dump-weights") {
+        print!("{}", c0m_frontend::dump::dump_tree_weighted(&arena, root));
+        return ExitCode::SUCCESS;
+    }
+
     // Increment 3: index the functions the DOS needs for inlining.
     let dos = DosStore::build(&arena, root);
+    
     // Increment 4: emit.
     let emitted = match emit_program(&arena, root, &dos) {
         Ok(r) => r,
@@ -95,6 +116,14 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
+
+    if args.iter().any(|a| a == "--dump-strategies") {
+        for (id, s) in emitted.strategies.iter().filter(|(_, s)| *s != c0m_dos::EmitStrategy::Direct) {
+            let n = arena.get(id);
+            println!("{:?} @ {}:{} -> {:?}", n.kind, n.span.line, n.span.col, s);
+        }
+        return ExitCode::SUCCESS;
+    }
 
     let text = if trace_emit {
         emitted.ctx.annotated_listing()
