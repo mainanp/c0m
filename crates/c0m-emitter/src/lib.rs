@@ -101,6 +101,18 @@ pub struct EmitResult {
 /// The weighting engine must have run first (it writes the tiers the DOS
 /// and the emitter read).
 pub fn emit_program(arena: &Arena, root: NodeId, dos: &DosStore) -> Result<EmitResult, EmitError> {
+    emit_program_with(arena, root, dos, false)
+}
+
+/// Like `emit_program`; with `debug_lines` the output carries `.file`/`.loc`
+/// directives so a profiler can map machine addresses back to output lines
+/// (and from there, through the trace, to AST nodes).
+pub fn emit_program_with(
+    arena: &Arena,
+    root: NodeId,
+    dos: &DosStore,
+    debug_lines: bool,
+) -> Result<EmitResult, EmitError> {
     let program = arena.get(root);
     if program.kind != NodeKind::Program {
         return Err(EmitError {
@@ -108,8 +120,11 @@ pub fn emit_program(arena: &Arena, root: NodeId, dos: &DosStore) -> Result<EmitR
             message: "emit_program expects the Program root node".to_string(),
         });
     }
-    let mut e = Emitter::new(arena, dos);
+    let mut e = Emitter::new(arena, dos, debug_lines);
     e.commit_text(".intel_syntax noprefix");
+    if debug_lines {
+        e.commit_text(".file 1 \"c0m.s\"");
+    }
     e.commit_text(".text");
     for &f in &program.children {
         e.emit_function(f)?;
@@ -192,6 +207,10 @@ struct Emitter<'a> {
     ret_count: usize,
     // whole-module state
     label_counter: u32,
+
+    /// Feedback mode: put a `.loc 1 <line>` before every instruction so the
+    /// assembler builds an address -> output-line table for the sampler.
+    debug_lines: bool,
 }
 
 // ── Small free helpers ──────────────────────────────────────────────
@@ -284,7 +303,7 @@ fn simple_assign(a: &Arena, block: NodeId) -> Option<(String, NodeId)> {
 }
 
 impl<'a> Emitter<'a> {
-    fn new(arena: &'a Arena, dos: &'a DosStore) -> Self {
+    fn new(arena: &'a Arena, dos: &'a DosStore, debug_lines: bool) -> Self {
         Self {
             arena,
             dos,
@@ -300,6 +319,7 @@ impl<'a> Emitter<'a> {
             ret_label: String::new(),
             ret_count: 0,
             label_counter: 0,
+            debug_lines,
         }
     }
 
@@ -310,6 +330,13 @@ impl<'a> Emitter<'a> {
     fn commit(&mut self, line: Line) {
         match line.kind {
             LineKind::Instr(owner) => {
+                if self.debug_lines {
+                    // The `.loc` takes line out_lines+1; the instruction
+                    // itself will be line out_lines+2, which is the number
+                    // the sampler will get back from addr2line.
+                    self.out.output.push_str(&format!("    .loc 1 {}\n", self.out_lines + 2));
+                    self.out_lines += 1;
+                }
                 self.out.output.push_str("    ");
                 self.out.output.push_str(&line.text);
                 self.out.output.push('\n');
@@ -1608,6 +1635,21 @@ mod tests {
         let out = asm(&src);
         assert!(out.contains("push"), "{out}");
         assert!(out.contains("pop rax"), "{out}");
+    }
+
+        #[test]
+    fn loc_directives_point_at_the_trace_line() {
+        let (mut arena, root) =
+            parse_source(include_str!("../../../c0m-tests/04_hot_kernel.c0m"), 0).expect("parse");
+        analyze(&mut arena, root, &no_history);
+        let dos = DosStore::build(&arena, root);
+        let ctx = emit_program_with(&arena, root, &dos, true).expect("emit").ctx;
+        let lines: Vec<&str> = ctx.output.lines().collect();
+        assert!(!ctx.trace.is_empty());
+        for t in &ctx.trace {
+            // the line right before each instruction is its own .loc
+            assert_eq!(lines[t.line - 2].trim(), format!(".loc 1 {}", t.line));
+        }
     }
 }
 
