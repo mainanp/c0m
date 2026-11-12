@@ -48,6 +48,35 @@ pub fn combine(w_raw: f32, w_learned: f32) -> f32 {
     0.6 * w_raw + 0.4 * w_learned
 }
 
+/// Lowest weight at which tier `t` begins (the inverse of `tier_of`).
+pub fn tier_floor_weight(t: u8) -> f32 {
+    match t {
+        0 => 0.0,
+        1 => 4.0,
+        2 => 12.0,
+        _ => 30.0,
+    }
+}
+
+/// A remembered tier is only given up when the weight drops below this
+/// fraction of that tier's entry threshold (hysteresis).
+pub const DEMOTE_FACTOR: f32 = 0.8;
+
+/// Tier with hysteresis: promotion is immediate, demotion needs a clear
+/// margin. With no previous tier this is exactly `tier_of`.
+pub fn tier_with_hysteresis(combined: f32, prev: Option<u8>) -> u8 {
+    let fresh = tier_of(combined);
+    match prev {
+        Some(p) if fresh < p && combined >= DEMOTE_FACTOR * tier_floor_weight(p) => p,
+        _ => fresh,
+    }
+}
+
+/// "No remembered tiers yet."
+pub fn no_tier_history(_key: u64) -> Option<u8> {
+    None
+}
+
 /// The lowest tier a node may have just because of WHERE it sits.
 /// A node inside `d` loops runs about d times as often as its function,
 /// so its heat is d * LOOP_COEFF, run through the same thresholds.
@@ -71,7 +100,18 @@ pub fn analyze(
     root: NodeId,
     learned: &dyn Fn(u64) -> Option<f32>,
 ) -> f32 {
-    analyze_node(arena, root, AnalyticsCtx::default(), learned)
+    analyze_with_memory(arena, root, learned, &no_tier_history)
+}
+
+/// Same as `analyze`, plus `prev_tier`: the tier each node had after the
+/// last feedback round (`None` = unknown). Used only for hysteresis.
+pub fn analyze_with_memory(
+    arena: &mut Arena,
+    root: NodeId,
+    learned: &dyn Fn(u64) -> Option<f32>,
+    prev_tier: &dyn Fn(u64) -> Option<u8>,
+) -> f32 {
+    analyze_node(arena, root, AnalyticsCtx::default(), learned, prev_tier)
 }
 
 /// The recursive part. Returns this node's RAW weight (never `combined`)
@@ -81,35 +121,32 @@ fn analyze_node(
     id: NodeId,
     ctx: AnalyticsCtx,
     learned: &dyn Fn(u64) -> Option<f32>,
+    prev_tier: &dyn Fn(u64) -> Option<u8>,
 ) -> f32 {
-    // Short looks: each ends at its semicolon, copying out small values.
     let kind = arena.get(id).kind;
     let child_count = arena.get(id).children.len();
 
-    // Recurse into the children. DOWN goes the context, UP comes the weight.
     let mut child_sum = 0.0_f32;
     for i in 0..child_count {
-        let child = arena.get(id).children[i]; // copies a NodeId out
+        let child = arena.get(id).children[i];
         let child_ctx = context_for_child(kind, i, ctx);
-        child_sum += analyze_node(arena, child, child_ctx, learned);
+        child_sum += analyze_node(arena, child, child_ctx, learned, prev_tier);
     }
 
-    // This node's own contribution plus what the children reported.
     let raw = local_score(arena.get(id), ctx) + child_sum;
 
-    // Blend in history. Unseen nodes use raw alone (no cold-start shrink).
     let key = arena.get(id).key();
     let (learned_w, combined) = match learned(key) {
         Some(l) => (l, combine(raw, l)),
         None => (0.0, raw),
     };
 
-    // Tier: the weight says one thing, the node's position another; take
-    // the higher. An explicit @N from the programmer beats both.
-    let natural = tier_of(combined).max(heat_floor(ctx));
+    // Tier: weight (with hysteresis) vs position (heat floor): take the
+    // higher. An explicit @N from the programmer beats both.
+    let held = tier_with_hysteresis(combined, prev_tier(key));
+    let natural = held.max(heat_floor(ctx));
     let tier = arena.get(id).tier_override.unwrap_or(natural);
 
-    // Record everything on the node, then hand raw up.
     let node = arena.get_mut(id);
     node.weight.raw = raw;
     node.weight.learned = learned_w;
@@ -117,7 +154,6 @@ fn analyze_node(
     node.weight.dos_tier = tier;
     raw
 }
-
 
 /// The context a node hands to its i-th child.
 ///
@@ -207,6 +243,30 @@ mod tests {
         assert_eq!(tier_of(4.0), 1);
         assert_eq!(tier_of(11.9), 1);
         assert_eq!(tier_of(30.0), 3);
+    }
+
+        #[test]
+    fn hysteresis_demotes_only_with_a_clear_margin() {
+        assert_eq!(tier_with_hysteresis(11.0, None), 1);
+        assert_eq!(tier_with_hysteresis(11.0, Some(2)), 2); // 11 >= 0.8*12 = 9.6
+        assert_eq!(tier_with_hysteresis(9.5, Some(2)), 1);  // below the margin
+        assert_eq!(tier_with_hysteresis(13.0, Some(1)), 2); // promotion is immediate
+        assert_eq!(tier_with_hysteresis(20.0, Some(3)), 2); // 20 < 0.8*30 = 24
+    }
+
+    #[test]
+    fn a_remembered_tier_is_held_through_a_small_dip() {
+        let src = "fn f() -> () { for i in 0..4 { } }";
+        let (mut arena, root) = parse_source(src, 0).expect("should parse");
+        let the_loop = first_statement(&arena, root);
+        let key = arena.get(the_loop).key();
+        let learned = move |k: u64| if k == key { Some(22.0) } else { None };
+
+        analyze_with_memory(&mut arena, root, &learned, &no_tier_history);
+        assert_eq!(tier(&arena, the_loop), 1); // 0.6*3 + 0.4*22 = 10.6
+
+        analyze_with_memory(&mut arena, root, &learned, &|k| if k == key { Some(2) } else { None });
+        assert_eq!(tier(&arena, the_loop), 2); // held: 10.6 >= 9.6
     }
 
     // ── context flows DOWN ───────────────────────────────────────────
