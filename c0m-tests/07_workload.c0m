@@ -1,0 +1,12 @@
+// Long-running workload for the feedback loop: ~4M inner iterations.
+// Static tier is whatever the structure says; the sampler decides the rest.
+fn work() -> i64 {
+    let mut t: i64 = 0;
+    for i in 0..2000 {
+        for j in 0..2000 {
+            t = t + i * j;
+        }
+    }
+    return t;
+}
+fn main() -> () { let r: i64 = work(); }    

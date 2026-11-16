@@ -5,3 +5,5 @@ edition.workspace = true
 
 [dependencies]
 c0m-frontend.workspace = true
+c0m-weighting.workspace = true
+libc = "0.2"
