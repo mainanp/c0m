@@ -1541,13 +1541,15 @@ mod tests {
 
     #[test]
     fn every_instruction_has_exactly_one_trace_entry() {
-        for src in [
-            include_str!("../../../c0m-tests/01_branching.c0m"),
-            include_str!("../../../c0m-tests/03_nested_loop.c0m"),
-            include_str!("../../../c0m-tests/04_hot_kernel.c0m"),
-            include_str!("../../../c0m-tests/05_calls.c0m"),
-        ] {
-            let ctx = compile(src).expect("should emit").ctx;
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../c0m-tests");
+        let mut checked = 0;
+        for entry in std::fs::read_dir(&dir).expect("c0m-tests/ should exist") {
+            let path = entry.unwrap().path();
+            if path.extension().and_then(|e| e.to_str()) != Some("c0m") {
+                continue;
+            }
+            let src = std::fs::read_to_string(&path).unwrap();
+            let ctx = compile(&src).expect("should emit").ctx;
             let instr_lines: Vec<usize> = ctx
                 .output
                 .lines()
@@ -1556,8 +1558,14 @@ mod tests {
                 .map(|(i, _)| i + 1)
                 .collect();
             let traced: Vec<usize> = ctx.trace.iter().map(|t| t.line).collect();
-            assert_eq!(instr_lines, traced, "trace must cover every instruction exactly once");
+            assert_eq!(
+                instr_lines, traced,
+                "{}: trace must cover every instruction exactly once",
+                path.display()
+            );
+            checked += 1;
         }
+        assert!(checked >= 8, "expected the whole suite, found {checked} programs");
     }
 
     #[test]
