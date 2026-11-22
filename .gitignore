@@ -3,3 +3,4 @@
 .c0m/
 *.pdb
 /demo/
+bench/build/
