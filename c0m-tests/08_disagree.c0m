@@ -1,4 +1,4 @@
-//Structurally "big" function, but nearly all its time is in one small loop.
+// Structurally "big" function, but nearly all its time is in one small loop.
 // Expected: the loop starts at tier 1 by structure; measurement lifts it to tier 2.
 fn busy() -> i64 {
     let mut t: i64 = 0;

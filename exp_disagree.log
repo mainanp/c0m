@@ -1,0 +1,75 @@
+── compile 1
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T1 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 2
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 3
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 4
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 5
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 6
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 7
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 8
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 9
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 10
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 11
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 12
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 13
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 14
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
+── compile 15
+skipped `main`: only 0 samples
+FuncDef      @   3:1   observed   32.0  learned   32.0  combined   32.0  T3 -> T3
+Loop         @   7:5   observed   32.0  learned   32.0  combined   17.0  T2 -> T2
+pattern memory saved to /tmp/exp2.db (7 entries)
